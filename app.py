@@ -111,6 +111,59 @@ hr { margin: 1.2rem 0; border: none; border-top: 1px solid var(--stroke); }
 
 /* image rounding */
 img { border-radius: 16px; }
+
+/* TOP BAR */
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(37,99,235,0.20);
+  border-radius: 16px;
+  background: linear-gradient(135deg,
+      rgba(37,99,235,0.12) 0%,
+      rgba(16,185,129,0.10) 55%,
+      rgba(99,102,241,0.10) 100%);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.06);
+  margin-bottom: 1rem;
+}
+.topbar-left{ display:flex; gap:.6rem; align-items:center; }
+.topbar-title{ font-weight:700; color: rgba(17,24,39,0.92); letter-spacing:-0.2px; }
+.dot{
+  width:10px; height:10px; border-radius:999px;
+  background: rgba(16,185,129,0.95);
+  box-shadow: 0 0 0 4px rgba(16,185,129,0.18);
+}
+.topbar-right{ display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-end; }
+.pill{
+  display:inline-flex; align-items:center;
+  padding: .28rem .65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.35);
+  background: rgba(255,255,255,0.55);
+  color: rgba(17,24,39,0.75);
+  font-size: .85rem;
+}
+
+/* FOOTER */
+.footer{
+  margin-top: 1.6rem;
+  padding: 1rem 1rem;
+  border-top: 1px solid rgba(148,163,184,0.35);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color: rgba(17,24,39,0.65);
+  font-size: 0.9rem;
+}
+.footer-links{ display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+.footer a{
+  color: rgba(37,99,235,0.85);
+  text-decoration: none;
+  font-weight: 600;
+}
+.footer a:hover{ text-decoration: underline; }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -131,6 +184,22 @@ page = st.sidebar.radio("Navigation", ["Accueil", "À propos", "Projets", "Comp�
 st.sidebar.divider()
 st.sidebar.caption("© Atta Jérémie KOUAME")
 
+# ------------------ TOP BAR ------------------
+st.markdown("""
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="dot"></span>
+    <span class="topbar-title">Portfolio</span>
+  </div>
+  <div class="topbar-right">
+    <span class="pill">📍 Abidjan</span>
+    <span class="pill">📊 Data Analyst • Business Analyst</span>
+    <span class="pill">✅ Disponible</span>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+
 # ------------------ HEADER ------------------
 colA, colB = st.columns([1, 3], vertical_alignment="center")
 
@@ -145,7 +214,7 @@ with colB:
     card_open()
     st.markdown("## Atta Jérémie KOUAME")
     badges(["Ingénieur Statisticien–Économiste"], "purple")
-    badges(["Data Analyst (Junior)", "Business Analyst (Junior)"], "green")
+    badges(["Data Analyst", "Business Analyst"], "green")
     st.markdown(
         '<div class="small">J’utilise l’analyse de données, les statistiques et les KPI pour soutenir la prise de décision business et économique.</div>',
         unsafe_allow_html=True
@@ -387,3 +456,17 @@ elif page == "Contact":
         st.markdown("### 💼 LinkedIn")
         st.markdown("[atta-jérémie-kouame](https://www.linkedin.com)")
         card_close()
+
+# ------------------ FOOTER ------------------
+st.markdown("""
+<div class="footer">
+  <div>© 2026 • Atta Jérémie KOUAME</div>
+  <div class="footer-links">
+    <a href="mailto:attajeremiek@gmail.com">Email</a>
+    <span>•</span>
+    <a href="https://www.linkedin.com" target="_blank">LinkedIn</a>
+    <span>•</span>
+    <a href="https://github.com" target="_blank">GitHub</a>
+  </div>
+</div>
+""", unsafe_allow_html=True)
