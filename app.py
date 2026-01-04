@@ -1,249 +1,389 @@
 import streamlit as st
 from pathlib import Path
 
-
+# ------------------ CONFIG ------------------
 st.set_page_config(
-    page_title="Portfolio | Data Analyst",
+    page_title="Portfolio | Atta Jérémie KOUAME",
     page_icon="📊",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
-# --- Header ---
-col1, col2 = st.columns([1, 3], vertical_alignment="center")
+# ------------------ STYLE (More premium + dynamic) ------------------
+st.markdown("""
+<style>
+:root{
+  --accent: #2563eb;      /* blue */
+  --accent2:#10b981;      /* green */
+  --ink: rgba(17, 24, 39, 0.92);
+  --muted: rgba(17, 24, 39, 0.70);
+  --stroke: rgba(148, 163, 184, 0.35);
+  --glass: rgba(255, 255, 255, 0.72);
+}
 
-with col1:
+/* App background */
+.stApp {
+  background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(37,99,235,0.14), transparent 55%),
+    radial-gradient(900px 500px at 85% 15%, rgba(16,185,129,0.14), transparent 55%),
+    radial-gradient(1000px 650px at 50% 95%, rgba(99,102,241,0.10), transparent 55%),
+    linear-gradient(180deg, rgba(248,250,252,1) 0%, rgba(255,255,255,1) 55%, rgba(248,250,252,1) 100%);
+}
+
+/* layout */
+.block-container { padding-top: 2rem; padding-bottom: 3rem; max-width: 1120px; }
+
+/* typography */
+h1,h2,h3 { color: var(--ink); letter-spacing: -0.3px; }
+p,li { color: var(--muted); }
+.small { font-size: 0.96rem; color: var(--muted); line-height: 1.55; }
+
+/* sidebar */
+section[data-testid="stSidebar"]{
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(10px);
+  border-right: 1px solid var(--stroke);
+}
+section[data-testid="stSidebar"] .stRadio label, 
+section[data-testid="stSidebar"] p, 
+section[data-testid="stSidebar"] span { color: var(--ink) !important; }
+
+/* ✅ card (NOW COLORFUL) */
+.card {
+  padding: 1.15rem 1.25rem;
+  border: 1px solid rgba(37,99,235,0.22);
+  border-radius: 18px;
+
+  /* ✅ background coloré (dégradé) */
+  background: linear-gradient(
+      135deg,
+      rgba(37,99,235,0.14) 0%,
+      rgba(16,185,129,0.12) 45%,
+      rgba(99,102,241,0.10) 100%
+  );
+
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 48px rgba(2,6,23,0.12);
+  border-color: rgba(16,185,129,0.35);
+}
+
+/* badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  margin-right: 0.4rem;
+  margin-bottom: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(37,99,235,0.22);
+  font-size: 0.85rem;
+  color: rgba(30,64,175,0.95);
+  background: rgba(37,99,235,0.08);
+}
+.badge.green {
+  border-color: rgba(16,185,129,0.24);
+  color: rgba(4,120,87,0.95);
+  background: rgba(16,185,129,0.09);
+}
+.badge.purple {
+  border-color: rgba(99,102,241,0.22);
+  color: rgba(67,56,202,0.95);
+  background: rgba(99,102,241,0.10);
+}
+
+/* divider */
+hr { margin: 1.2rem 0; border: none; border-top: 1px solid var(--stroke); }
+
+/* buttons */
+.stButton>button, .stDownloadButton>button {
+  border-radius: 12px !important;
+  padding: 0.62rem 0.9rem !important;
+  border: 1px solid rgba(37,99,235,0.28) !important;
+}
+.stButton>button:hover, .stDownloadButton>button:hover {
+  border-color: rgba(16,185,129,0.35) !important;
+}
+
+/* image rounding */
+img { border-radius: 16px; }
+</style>
+""", unsafe_allow_html=True)
+
+def badges(items, variant="blue"):
+    cls = {"blue": "", "green": " green", "purple": " purple"}.get(variant, "")
+    html = "".join([f'<span class="badge{cls}">{x}</span>' for x in items])
+    st.markdown(html, unsafe_allow_html=True)
+
+def card_open():
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+
+def card_close():
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ------------------ SIDEBAR ------------------
+st.sidebar.markdown("## ⚙️ Portfolio")
+page = st.sidebar.radio("Navigation", ["Accueil", "À propos", "Projets", "Compétences", "CV", "Contact"])
+st.sidebar.divider()
+st.sidebar.caption("© Atta Jérémie KOUAME")
+
+# ------------------ HEADER ------------------
+colA, colB = st.columns([1, 3], vertical_alignment="center")
+
+with colA:
     img_path = Path("jeremie_copie.jpg")
     if img_path.exists():
-        st.image(str(img_path), width=160)
+        st.image(str(img_path), width=170)
     else:
         st.info("Ajoute une photo : jeremie_copie.jpg")
 
-with col2:
-    st.title("Atta Jérémie KOUAME")
-    st.caption("Ingénieur Statisticien – Économiste | Data Analyst & Business Analyst (Junior)")
-    st.write(
-        "J’utilise l’analyse de données, les statistiques et les KPI "
-        "pour soutenir la prise de décision business et économique."
+with colB:
+    card_open()
+    st.markdown("## Atta Jérémie KOUAME")
+    badges(["Ingénieur Statisticien–Économiste"], "purple")
+    badges(["Data Analyst (Junior)", "Business Analyst (Junior)"], "green")
+    st.markdown(
+        '<div class="small">J’utilise l’analyse de données, les statistiques et les KPI pour soutenir la prise de décision business et économique.</div>',
+        unsafe_allow_html=True
     )
+    card_close()
 
 st.divider()
 
-# --- Navigation ---
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Aller à", ["Accueil", "À propos", "Projets", "Compétences", "CV", "Contact"])
-
-# ---------------- PAGES ----------------
+# ------------------ PAGES ------------------
 if page == "Accueil":
     st.subheader("Bienvenue 👋")
 
-    st.write(
-        "Bienvenue sur mon portfolio.\n\n"
-        "Je suis **Ingénieur Statisticien–Économiste**, spécialisé en analyse de données et "
-        "aide à la décision.\n\n"
-        "Ce site présente mon parcours, mes projets et les compétences que je développe "
-        "en tant que **Data Analyst & Business Analyst**."
-    )
+    c1, c2, c3 = st.columns(3, gap="large")
+    with c1:
+        card_open()
+        st.markdown("**🎯 Objectif**")
+        st.markdown('<div class="small">Présenter mon parcours, mes projets et ma valeur ajoutée orientée data & décision.</div>', unsafe_allow_html=True)
+        card_close()
+    with c2:
+        card_open()
+        st.markdown("**🧠 Ce que je fais**")
+        st.markdown('<div class="small">Analyse, KPI, reporting, modélisation, visualisation et recommandations.</div>', unsafe_allow_html=True)
+        card_close()
+    with c3:
+        card_open()
+        st.markdown("**📍 Localisation**")
+        st.markdown('<div class="small">Abidjan, Côte d’Ivoire</div>', unsafe_allow_html=True)
+        card_close()
 
-    st.markdown("### Ce que vous trouverez ici")
+    st.markdown("### Aperçu")
+    card_open()
     st.markdown(
-        "- 📊 Des projets concrets d’analyse de données, de reporting et de KPI\n"
-        "- 🧠 Mes compétences techniques et analytiques\n"
-        "- 📄 Mon CV et mes informations de contact"
+        '<div class="small">'
+        'Bienvenue sur mon portfolio.<br/><br/>'
+        'Je suis <b>Ingénieur Statisticien–Économiste</b>, spécialisé en analyse de données et aide à la décision.<br/><br/>'
+        'Ce site présente mon parcours, mes projets et les compétences que je développe en tant que <b>Data Analyst & Business Analyst</b>.'
+        '</div>',
+        unsafe_allow_html=True
     )
+    card_close()
+
+    st.markdown("### Accès rapide")
+    q1, q2 = st.columns([2, 1], gap="large")
+    with q1:
+        card_open()
+        st.markdown("**📌 Points clés**")
+        st.markdown(
+            "- 📊 Projets data, business & finance\n"
+            "- 🧠 Méthode rigoureuse et orientée résultats\n"
+            "- 📄 CV téléchargeable en un clic"
+        )
+        card_close()
+    with q2:
+        card_open()
+        cv_path = Path("CV_ISE_KOUAME_ATTA.pdf")
+        if cv_path.exists():
+            with open(cv_path, "rb") as f:
+                st.download_button(
+                    "⬇️ Télécharger mon CV",
+                    data=f,
+                    file_name="CV_ISE_KOUAME_ATTA.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
+        else:
+            st.error("CV introuvable")
+        card_close()
 
 elif page == "À propos":
     st.subheader("À propos")
-    st.write(
-        "Ingénieur Statisticien–Économiste de formation, je me spécialise dans l’analyse de données, "
-        "la modélisation statistique et l’aide à la décision.\n\n"
-        "Mon parcours m’a permis de développer des compétences solides en statistiques appliquées, "
-        "analyse exploratoire et visualisation de données, avec une attention particulière portée "
-        "à la compréhension des enjeux business.\n\n"
-        "J’aime structurer des problématiques métiers, construire des indicateurs de performance "
-        "et transformer les résultats en recommandations claires et exploitables.\n\n"
-        "Je recherche actuellement une opportunité en Data Analyst ou Business Analyst, "
-        "afin de continuer à développer mes compétences tout en apportant une réelle valeur ajoutée "
-        "aux équipes métiers."
+    card_open()
+    st.markdown(
+        '<div class="small">'
+        'Ingénieur Statisticien–Économiste de formation, je me spécialise dans l’analyse de données, la modélisation statistique et l’aide à la décision.<br/><br/>'
+        'Mon parcours m’a permis de développer des compétences solides en statistiques appliquées, analyse exploratoire et visualisation de données, avec une attention particulière portée à la compréhension des enjeux business.<br/><br/>'
+        'J’aime structurer des problématiques métiers, construire des indicateurs de performance et transformer les résultats en recommandations claires et exploitables.<br/><br/>'
+        'Je recherche actuellement une opportunité en Data Analyst ou Business Analyst, afin de continuer à développer mes compétences tout en apportant une réelle valeur ajoutée aux équipes métiers.'
+        '</div>',
+        unsafe_allow_html=True
     )
+    card_close()
 
 elif page == "Projets":
     st.subheader("Projets")
+    st.caption("Sélection de projets académiques et professionnels orientés data, business et finance.")
 
-    with st.expander("📌 Projet 1 — Prédiction de la rétention d’abonnés fibre (Machine Learning)"):
-        st.markdown("""
-**Contexte :** Dans un marché télécom concurrentiel, la rétention des abonnés est un enjeu stratégique.  
-**Objectif :** identifier les clients à risque de suspension ou de résiliation afin de proposer des actions de rétention ciblées.  
+    left, right = st.columns(2, gap="large")
 
-**Données :** données clients anonymisées (usage, ancienneté, incidents, statut).  
-**Outils :** Python (Pandas, NumPy, Scikit-learn), Streamlit.  
-**Méthodes :** nettoyage, EDA, feature engineering, modélisation de classification, évaluation des performances.
-""")
+    with left:
+        card_open()
+        st.markdown("### 📌 Projet 1 — Prédiction de la rétention d’abonnés fibre (Machine Learning)")
+        badges(["Python", "Pandas", "Scikit-learn"], "green")
+        badges(["Classification", "EDA", "Business Impact"], "purple")
+        st.markdown("**Contexte :** rétention = enjeu stratégique en télécom.")
+        st.markdown("**Objectif :** identifier les clients à risque de suspension / résiliation pour cibler la rétention.")
+        st.markdown("**Méthodes :** nettoyage, EDA, feature engineering, classification, évaluation.")
+        st.markdown("**Résultat :** variables clés (ancienneté, usage, incidents) + recommandations actionnables.")
+        card_close()
 
-        st.markdown("### Résultats & insights")
-        st.markdown("""
-- Identification des abonnés à risque de churn  
-- Variables clés : ancienneté, usage, incidents techniques  
-- Modèle utile pour cibler des actions de rétention
-""")
+    with right:
+        card_open()
+        st.markdown("### 📌 Projet 2 — Déterminants de la pauvreté des exploitants agricoles (UEMOA, 2021)")
+        badges(["Stata", "Économétrie"], "green")
+        badges(["Data socio-éco", "Politiques publiques"], "purple")
+        st.markdown("**Contexte :** enjeu majeur de pauvreté rurale en zone UEMOA.")
+        st.markdown("**Objectif :** identifier les facteurs associés à la pauvreté pour éclairer la décision publique.")
+        st.markdown("**Méthodes :** préparation des bases, descriptif, estimation économétrique, interprétation.")
+        st.markdown("**Livrable :** synthèse des résultats + recommandations orientées action.")
+        card_close()
 
-        st.markdown("### Impact business")
-        st.markdown("""
-- Réduction potentielle du taux de churn  
-- Meilleure allocation des actions commerciales  
-- Amélioration de la valeur client
-""")
+    with left:
+        card_open()
+        st.markdown("### 📌 Projet 3 — Gestion et optimisation d’un portefeuille actions / obligations")
+        badges(["Finance", "Risque"], "green")
+        badges(["Allocation d’actifs", "Excel avancé"], "purple")
+        st.markdown("**Objectif :** construire une allocation mixte optimisant la performance ajustée au risque.")
+        st.markdown("**Méthodes :** analyse rendement/risque, sensibilité aux taux, optimisation, reporting.")
+        st.markdown("**Résultat :** amélioration du couple rendement/risque + recommandations d’ajustement.")
+        card_close()
 
-    with st.expander("📌 Projet 2 — Déterminants de la pauvreté des exploitants agricoles (UEMOA, 2021)"):
-        st.markdown("""
-**Contexte :** La pauvreté rurale demeure un enjeu majeur en zone UEMOA.  
-**Objectif :** analyser les facteurs associés à la pauvreté des exploitants agricoles afin d’éclairer la décision publique.
-
-**Données :** données socio-économiques 2021 (ménages/exploitants) : caractéristiques du ménage, éducation, accès aux services, conditions de production, etc.  
-**Outils :** Stata (modélisation économétrique), préparation/structuration des bases.  
-**Méthodes :** nettoyage, analyse descriptive, estimation économétrique, interprétation, recommandations.
-""")
-
-        st.markdown("### Contribution")
-        st.markdown("""
-- Construction, nettoyage et structuration de bases de données socio-économiques  
-- Modélisation économétrique appliquée au développement rural  
-- Rédaction et synthèse de résultats pour appuyer l’aide à la décision
-""")
-
-        st.markdown("### Résultats (à détailler dans la version finale)")
-        st.markdown("""
-- Identification de facteurs associés à la pauvreté (ex. éducation, accès aux services, caractéristiques de l’exploitation)  
-- Recommandations orientées politiques publiques : ciblage des actions, renforcement des capacités, amélioration de l’accès aux services
-""")
-
-    with st.expander("📌 Projet 3 — Gestion et optimisation d’un portefeuille actions / obligations"):
-        st.markdown("""
-**Contexte :** La gestion de portefeuille vise à optimiser la performance financière tout en maîtrisant le risque.  
-**Objectif :** construire une stratégie d’allocation actions / obligations maximisant la performance ajustée au risque.
-
-**Données :** rendements d’actions et d’obligations, taux d’intérêt, indicateurs de marché.  
-**Outils :** Excel avancé (modélisation, reporting), finance quantitative.  
-**Méthodes :** analyse rendement/risque, allocation d’actifs, sensibilité aux taux, optimisation, reporting.
-""")
-
-        st.markdown("### Résultats & insights")
-        st.markdown("""
-- Amélioration du couple rendement / risque  
-- Sensibilité différenciée du portefeuille aux variations de marché  
-- Arbitrage actions / obligations selon le contexte macro-financier
-""")
-
-        st.markdown("### Recommandations")
-        st.markdown("""
-- Ajustement de l’allocation selon le profil de risque  
-- Stratégies de couverture face aux variations de taux  
-- Suivi régulier via des indicateurs de performance
-""")
-
-    with st.expander("📌 Projet 4 — Analyse de la satisfaction du restaurant de l’ENSEA"):
-        st.markdown("""
-**Contexte :** La satisfaction des usagers est un indicateur clé de la qualité de service.  
-**Objectif :** mesurer la satisfaction des étudiants et identifier les axes d’amélioration prioritaires.
-
-**Données :** enquête auprès des étudiants (qualité des repas, prix, hygiène, temps d’attente, accueil).  
-**Outils :** Python / R, statistiques multivariées, visualisation de données.  
-**Méthodes :** construction d’indicateurs, ACP, alpha de Cronbach, interprétation.
-""")
-
-        st.markdown("### Résultats & insights")
-        st.markdown("""
-- Construction d’un indicateur global de satisfaction fiable  
-- Identification des dimensions clés de la satisfaction  
-- Mise en évidence des facteurs d’amélioration prioritaires
-""")
-
-        st.markdown("### Recommandations")
-        st.markdown("""
-- Amélioration de la qualité perçue des repas  
-- Réduction du temps d’attente  
-- Renforcement de l’accueil et de l’organisation du service
-""")
-
+    with right:
+        card_open()
+        st.markdown("### 📌 Projet 4 — Analyse de la satisfaction du restaurant de l’ENSEA (ACP)")
+        badges(["Statistiques", "ACP"], "green")
+        badges(["Alpha de Cronbach", "DataViz"], "purple")
+        st.markdown("**Objectif :** mesurer la satisfaction et identifier les axes d’amélioration prioritaires.")
+        st.markdown("**Méthodes :** indicateurs, ACP, fiabilité interne, visualisation, recommandations.")
+        st.markdown("**Résultat :** indicateur global fiable + priorités d’amélioration.")
+        card_close()
 
 elif page == "Compétences":
     st.subheader("Compétences")
 
-    st.markdown("### 📊 Data & Statistiques")
-    st.markdown("""
-- Analyse exploratoire des données (EDA)  
-- Statistiques descriptives et inférentielles  
-- Régression, classification, clustering  
-- Séries temporelles  
-- Analyse factorielle (ACP), fiabilité (alpha de Cronbach)
-""")
+    c1, c2 = st.columns(2, gap="large")
+    with c1:
+        card_open()
+        st.markdown("### 📊 Data & Statistiques")
+        badges(["EDA", "Régression", "Séries temporelles", "ACP"], "green")
+        st.markdown(
+            "- Analyse exploratoire des données (EDA)\n"
+            "- Statistiques descriptives et inférentielles\n"
+            "- Régression, classification, clustering\n"
+            "- Séries temporelles\n"
+            "- ACP, fiabilité (alpha de Cronbach)"
+        )
+        card_close()
 
-    st.markdown("### 🤖 Machine Learning")
-    st.markdown("""
-- Préparation et nettoyage des données  
-- Feature engineering  
-- Modèles de classification (churn / rétention)  
-- Évaluation des performances des modèles
-""")
+        card_open()
+        st.markdown("### 🧠 Économétrie & Politiques publiques")
+        badges(["Stata", "Modélisation", "Interprétation"], "purple")
+        st.markdown(
+            "- Modélisation économétrique appliquée\n"
+            "- Analyse des déterminants socio-économiques\n"
+            "- Interprétation des résultats et recommandations"
+        )
+        card_close()
 
-    st.markdown("### 🧠 Économétrie & Politiques publiques")
-    st.markdown("""
-- Modélisation économétrique appliquée  
-- Analyse des déterminants socio-économiques  
-- Interprétation des résultats et recommandations
-""")
+    with c2:
+        card_open()
+        st.markdown("### 🤖 Machine Learning")
+        badges(["Scikit-learn", "Classification", "Feature engineering"], "green")
+        st.markdown(
+            "- Préparation et nettoyage des données\n"
+            "- Feature engineering\n"
+            "- Modèles de classification (churn / rétention)\n"
+            "- Évaluation des performances des modèles"
+        )
+        card_close()
 
-    st.markdown("### 💼 Business & Finance")
-    st.markdown("""
-- Analyse de KPI et reporting  
-- Aide à la décision  
-- Gestion et optimisation de portefeuille  
-- Analyse du risque et sensibilité aux taux
-""")
+        card_open()
+        st.markdown("### 💼 Business & Finance")
+        badges(["KPI", "Reporting", "Risque", "Allocation"], "purple")
+        st.markdown(
+            "- Analyse de KPI et reporting\n"
+            "- Aide à la décision\n"
+            "- Gestion et optimisation de portefeuille\n"
+            "- Analyse du risque et sensibilité aux taux"
+        )
+        card_close()
 
     st.markdown("### 🛠️ Outils & technologies")
-    st.markdown("""
-- **Langages :** Python, R, SQL  
-- **Data & ML :** Pandas, NumPy, Scikit-learn  
-- **BI & Dataviz :** Power BI, Tableau, Excel avancé  
-- **Stats & éco :** Stata, SPSS, EViews  
-- **Autres :** VS Code, Git (bases)
-""")
-
+    card_open()
+    badges(["Python", "R", "SQL", "Power BI", "Tableau", "Excel"], "green")
+    st.markdown(
+        "- **Langages :** Python, R, SQL\n"
+        "- **Data & ML :** Pandas, NumPy, Scikit-learn\n"
+        "- **BI & Dataviz :** Power BI, Tableau, Excel avancé\n"
+        "- **Stats & éco :** Stata, SPSS, EViews\n"
+        "- **Autres :** VS Code, Git (bases)"
+    )
+    card_close()
 
 elif page == "CV":
     st.subheader("📄 Curriculum Vitae")
 
-    st.write(
-        "Vous pouvez consulter ou télécharger mon CV ci-dessous."
-    )
-
-    with open("CV_ISE_KOUAME_ATTA.pdf", "rb") as file:
-        st.download_button(
-            label="⬇️ Télécharger mon CV (PDF)",
-            data=file,
-            file_name="CCV_ISE_KOUAME_ATTA.pdf",
-            mime="application/pdf"
-        )
-
+    c1, c2 = st.columns([2, 1], gap="large")
+    with c1:
+        card_open()
+        st.markdown('<div class="small">Vous pouvez consulter ou télécharger mon CV ci-dessous.</div>', unsafe_allow_html=True)
+        card_close()
+    with c2:
+        card_open()
+        cv_path = Path("CV_ISE_KOUAME_ATTA.pdf")
+        if cv_path.exists():
+            with open(cv_path, "rb") as file:
+                st.download_button(
+                    label="⬇️ Télécharger mon CV (PDF)",
+                    data=file,
+                    file_name="CV_ISE_KOUAME_ATTA.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
+        else:
+            st.error("Fichier introuvable : CV_ISE_KOUAME_ATTA.pdf")
+        card_close()
 
 elif page == "Contact":
     st.subheader("📬 Contact")
+    st.caption("Disponible pour opportunités, collaborations et échanges professionnels.")
 
-    st.write("N’hésitez pas à me contacter pour toute opportunité, collaboration ou échange professionnel.")
+    c1, c2 = st.columns(2, gap="large")
 
-    st.markdown("### 📧 Email")
-    st.markdown("[attajeremiek@gmail.com](mailto:attajeremiek@gmail.com)")
+    with c1:
+        card_open()
+        st.markdown("### 📧 Email")
+        st.markdown("[attajeremiek@gmail.com](mailto:attajeremiek@gmail.com)")
+        st.markdown("### 📍 Localisation")
+        st.markdown('<div class="small">Abidjan, Côte d’Ivoire</div>', unsafe_allow_html=True)
+        card_close()
 
-    st.markdown("### 📱 Téléphone")
-    st.markdown(
-        "- [+225 07 79 01 08 72](tel:+2250779010872)\n"
-        "- [+225 01 72 66 68 99](tel:+2250172666899)\n"
-        "- [+225 07 89 25 29 67](tel:+2250789252967)"
-    )
-
-    st.markdown("### 📍 Localisation")
-    st.write("Abidjan, Côte d’Ivoire")
-
-    st.markdown("### 💼 LinkedIn")
-    st.markdown("[atta-jérémie-kouame](https://www.linkedin.com)")
-
+    with c2:
+        card_open()
+        st.markdown("### 📱 Téléphone")
+        st.markdown(
+            "- [+225 07 79 01 08 72](tel:+2250779010872)\n"
+            "- [+225 01 72 66 68 99](tel:+2250172666899)\n"
+            "- [+225 07 89 25 29 67](tel:+2250789252967)"
+        )
+        st.markdown("### 💼 LinkedIn")
+        st.markdown("[atta-jérémie-kouame](https://www.linkedin.com)")
+        card_close()
