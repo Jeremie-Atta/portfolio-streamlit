@@ -432,30 +432,81 @@ elif page == "CV":
         card_close()
 
 elif page == "Contact":
+    import requests
+
     st.subheader("📬 Contact")
     st.caption("Disponible pour opportunités, collaborations et échanges professionnels.")
 
     c1, c2 = st.columns(2, gap="large")
 
+    # --- Infos ---
     with c1:
         card_open()
         st.markdown("### 📧 Email")
         st.markdown("[attajeremiek@gmail.com](mailto:attajeremiek@gmail.com)")
-        st.markdown("### 📍 Localisation")
-        st.markdown('<div class="small">Abidjan, Côte d’Ivoire</div>', unsafe_allow_html=True)
-        card_close()
 
-    with c2:
-        card_open()
         st.markdown("### 📱 Téléphone")
         st.markdown(
             "- [+225 07 79 01 08 72](tel:+2250779010872)\n"
             "- [+225 01 72 66 68 99](tel:+2250172666899)\n"
             "- [+225 07 89 25 29 67](tel:+2250789252967)"
         )
+
+        st.markdown("### 📍 Localisation")
+        st.markdown('<div class="small">Abidjan, Côte d’Ivoire</div>', unsafe_allow_html=True)
+
         st.markdown("### 💼 LinkedIn")
         st.markdown("[atta-jérémie-kouame](https://www.linkedin.com)")
         card_close()
+
+    # --- Formulaire (envoi automatique via Formspree) ---
+    with c2:
+        card_open()
+        st.markdown("### ✉️ Envoyer un message")
+
+        with st.form("contact_form", clear_on_submit=True):
+            nom = st.text_input("Nom complet *", placeholder="Ex: KOUAME Atta Jérémie")
+            email = st.text_input("Email *", placeholder="Ex: nom@gmail.com")
+            message = st.text_area("Message *", height=140, placeholder="Votre message...")
+            submitted = st.form_submit_button("📨 Envoyer")
+
+        if submitted:
+            if not nom.strip() or not email.strip() or not message.strip():
+                st.error("Veuillez remplir tous les champs obligatoires (*) avant d’envoyer.")
+            elif "@" not in email or "." not in email:
+                st.error("Veuillez entrer une adresse email valide.")
+            else:
+                endpoint = "https://formspree.io/f/mqeawbbk"  # <-- remplace par ton vrai endpoint
+
+                payload = {
+                    "name": nom,
+                    "email": email,
+                    "message": message,
+                    "_subject": f"Nouveau message Portfolio - {nom}",
+                }
+
+                try:
+                    r = requests.post(
+                        endpoint,
+                        data=payload,
+                        headers={"Accept": "application/json"},
+                        timeout=15,
+                    )
+
+                    if r.status_code in (200, 201):
+                        st.success("✅ Message envoyé ! Je l’ai bien reçu par email.")
+                    else:
+                        st.error("❌ Envoi échoué. Réessaie ou contacte-moi directement par email.")
+                        st.code(f"Status: {r.status_code}\nRéponse: {r.text}")
+
+                except requests.exceptions.RequestException as e:
+                    st.error("❌ Problème réseau pendant l’envoi. Réessaie dans quelques secondes.")
+                    st.code(str(e))
+
+        st.caption("🔒 Envoi automatique vers ma boîte email via Formspree.")
+        card_close()
+
+
 
 # ------------------ FOOTER ------------------
 st.markdown("""
