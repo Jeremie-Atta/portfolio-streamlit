@@ -9,6 +9,14 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# ------------------ STATE (for navigation + project focus) ------------------
+if "page" not in st.session_state:
+    st.session_state.page = "Accueil"
+if "focus_project" not in st.session_state:
+    st.session_state.focus_project = None  # 1..4
+
+NAV = ["Accueil", "À propos", "Parcours", "Projets", "Compétences", "CV", "Contact"]
+
 # ------------------ STYLE (More premium + dynamic) ------------------
 st.markdown("""
 <style>
@@ -44,8 +52,8 @@ section[data-testid="stSidebar"]{
   backdrop-filter: blur(10px);
   border-right: 1px solid var(--stroke);
 }
-section[data-testid="stSidebar"] .stRadio label, 
-section[data-testid="stSidebar"] p, 
+section[data-testid="stSidebar"] .stRadio label,
+section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] span { color: var(--ink) !important; }
 
 /* ✅ card (NOW COLORFUL) */
@@ -53,15 +61,12 @@ section[data-testid="stSidebar"] span { color: var(--ink) !important; }
   padding: 1.15rem 1.25rem;
   border: 1px solid rgba(37,99,235,0.22);
   border-radius: 18px;
-
-  /* ✅ background coloré (dégradé) */
   background: linear-gradient(
       135deg,
       rgba(37,99,235,0.14) 0%,
       rgba(16,185,129,0.12) 45%,
       rgba(99,102,241,0.10) 100%
   );
-
   backdrop-filter: blur(10px);
   box-shadow: 0 10px 30px rgba(2,6,23,0.08);
   transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
@@ -180,7 +185,6 @@ img { border-radius: 16px; }
   background: linear-gradient(180deg, rgba(37,99,235,0.55), rgba(16,185,129,0.55));
   border-radius: 999px;
 }
-
 .titem{
   position: relative;
   margin: 0.9rem 0;
@@ -193,7 +197,6 @@ img { border-radius: 16px; }
       rgba(99,102,241,0.08) 100%);
   box-shadow: 0 10px 24px rgba(2,6,23,0.06);
 }
-
 .tdot{
   position:absolute;
   left: -1.2rem;
@@ -204,30 +207,15 @@ img { border-radius: 16px; }
   background: rgba(16,185,129,0.95);
   box-shadow: 0 0 0 5px rgba(16,185,129,0.18);
 }
+.tdate{ font-size: 0.85rem; color: rgba(17,24,39,0.65); margin-bottom: 0.2rem; }
+.ttitle{ font-weight: 800; color: rgba(17,24,39,0.92); margin-bottom: 0.2rem; letter-spacing: -0.2px; }
+.tmeta{ font-size: 0.9rem; color: rgba(17,24,39,0.72); margin-bottom: 0.35rem; }
+.tdesc{ font-size: 0.95rem; color: rgba(17,24,39,0.70); line-height: 1.55; }
 
-.tdate{
-  font-size: 0.85rem;
-  color: rgba(17,24,39,0.65);
-  margin-bottom: 0.2rem;
+/* Make st.button inside timeline look like the tbtn */
+div[data-testid="stButton"] button {
+  background: rgba(37,99,235,0.10) !important;
 }
-.ttitle{
-  font-weight: 800;
-  color: rgba(17,24,39,0.92);
-  margin-bottom: 0.2rem;
-  letter-spacing: -0.2px;
-}
-.tmeta{
-  font-size: 0.9rem;
-  color: rgba(17,24,39,0.72);
-  margin-bottom: 0.35rem;
-}
-.tdesc{
-  font-size: 0.95rem;
-  color: rgba(17,24,39,0.70);
-  line-height: 1.55;
-}
-
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -242,9 +230,19 @@ def card_open():
 def card_close():
     st.markdown('</div>', unsafe_allow_html=True)
 
+def go_to_project(project_id: int):
+    st.session_state.page = "Projets"
+    st.session_state.focus_project = project_id
+    st.rerun()
+
 # ------------------ SIDEBAR ------------------
 st.sidebar.markdown("## ⚙️ Portfolio")
-page = st.sidebar.radio("Navigation", ["Accueil", "À propos","Parcours", "Projets", "Compétences", "CV", "Contact"])
+page = st.sidebar.radio(
+    "Navigation",
+    NAV,
+    index=NAV.index(st.session_state.page)
+)
+st.session_state.page = page
 st.sidebar.divider()
 st.sidebar.caption("© Atta Jérémie KOUAME")
 
@@ -262,7 +260,6 @@ st.markdown("""
   </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 # ------------------ HEADER ------------------
 colA, colB = st.columns([1, 3], vertical_alignment="center")
@@ -360,13 +357,10 @@ elif page == "À propos":
         unsafe_allow_html=True
     )
     card_close()
-    
 
-    # ================== PARCOURS PROFESSIONNEL ==================
 elif page == "Parcours":
     st.subheader("📌 Parcours")
 
-    # --------- TIMELINE SCOLAIRE ----------
     st.markdown("## 🎓 Parcours académique")
     card_open()
     st.markdown("""
@@ -395,7 +389,6 @@ elif page == "Parcours":
     """, unsafe_allow_html=True)
     card_close()
 
-    # --------- TIMELINE PRO ----------
     st.markdown("## 💼 Parcours professionnel")
     card_open()
     st.markdown("""
@@ -410,7 +403,14 @@ elif page == "Parcours":
           Objectif : identifier les clients à risque et proposer des actions de rétention.
         </div>
       </div>
+    </div>
+    """, unsafe_allow_html=True)
 
+    if st.button("📄 Voir projet associé", key="btn_proj1", use_container_width=True):
+        go_to_project(1)
+
+    st.markdown("""
+    <div class="timeline">
       <div class="titem">
         <span class="tdot"></span>
         <div class="tdate">Projet</div>
@@ -421,7 +421,14 @@ elif page == "Parcours":
           pour appuyer la décision publique.
         </div>
       </div>
+    </div>
+    """, unsafe_allow_html=True)
 
+    if st.button("📄 Voir projet associé", key="btn_proj2", use_container_width=True):
+        go_to_project(2)
+
+    st.markdown("""
+    <div class="timeline">
       <div class="titem">
         <span class="tdot"></span>
         <div class="tdate">Projet</div>
@@ -431,7 +438,14 @@ elif page == "Parcours":
           Analyse rendement/risque, allocation d’actifs, sensibilité aux taux et reporting.
         </div>
       </div>
+    </div>
+    """, unsafe_allow_html=True)
 
+    if st.button("📄 Voir projet associé", key="btn_proj3", use_container_width=True):
+        go_to_project(3)
+
+    st.markdown("""
+    <div class="timeline">
       <div class="titem">
         <span class="tdot"></span>
         <div class="tdate">Projet</div>
@@ -443,59 +457,56 @@ elif page == "Parcours":
       </div>
     </div>
     """, unsafe_allow_html=True)
+
+    if st.button("📄 Voir projet associé", key="btn_proj4", use_container_width=True):
+        go_to_project(4)
+
     card_close()
-
     st.info("🎯 Objectif : intégrer une équipe data en tant que **Data Analyst** ou **Business Analyst** et générer un impact métier mesurable.")
-
-
 
 elif page == "Projets":
     st.subheader("Projets")
     st.caption("Sélection de projets académiques et professionnels orientés data, business et finance.")
 
-    left, right = st.columns(2, gap="large")
+    # If coming from Parcours buttons, auto-open the right expander
+    focus = st.session_state.focus_project
+    st.session_state.focus_project = None  # reset after use
 
-    with left:
-        card_open()
-        st.markdown("### 📌 Projet 1 — Prédiction de la rétention d’abonnés fibre (Machine Learning)")
+    # helper booleans
+    open1 = (focus == 1)
+    open2 = (focus == 2)
+    open3 = (focus == 3)
+    open4 = (focus == 4)
+
+    with st.expander("📌 Projet 1 — Prédiction de la rétention d’abonnés fibre (Machine Learning)", expanded=open1):
         badges(["Python", "Pandas", "Scikit-learn"], "green")
         badges(["Classification", "EDA", "Business Impact"], "purple")
         st.markdown("**Contexte :** rétention = enjeu stratégique en télécom.")
         st.markdown("**Objectif :** identifier les clients à risque de suspension / résiliation pour cibler la rétention.")
         st.markdown("**Méthodes :** nettoyage, EDA, feature engineering, classification, évaluation.")
         st.markdown("**Résultat :** variables clés (ancienneté, usage, incidents) + recommandations actionnables.")
-        card_close()
 
-    with right:
-        card_open()
-        st.markdown("### 📌 Projet 2 — Déterminants de la pauvreté des exploitants agricoles (UEMOA, 2021)")
+    with st.expander("📌 Projet 2 — Déterminants de la pauvreté des exploitants agricoles (UEMOA, 2021)", expanded=open2):
         badges(["Stata", "Économétrie"], "green")
         badges(["Data socio-éco", "Politiques publiques"], "purple")
         st.markdown("**Contexte :** enjeu majeur de pauvreté rurale en zone UEMOA.")
         st.markdown("**Objectif :** identifier les facteurs associés à la pauvreté pour éclairer la décision publique.")
         st.markdown("**Méthodes :** préparation des bases, descriptif, estimation économétrique, interprétation.")
         st.markdown("**Livrable :** synthèse des résultats + recommandations orientées action.")
-        card_close()
 
-    with left:
-        card_open()
-        st.markdown("### 📌 Projet 3 — Gestion et optimisation d’un portefeuille actions / obligations")
+    with st.expander("📌 Projet 3 — Gestion et optimisation d’un portefeuille actions / obligations", expanded=open3):
         badges(["Finance", "Risque"], "green")
         badges(["Allocation d’actifs", "Excel avancé"], "purple")
         st.markdown("**Objectif :** construire une allocation mixte optimisant la performance ajustée au risque.")
         st.markdown("**Méthodes :** analyse rendement/risque, sensibilité aux taux, optimisation, reporting.")
         st.markdown("**Résultat :** amélioration du couple rendement/risque + recommandations d’ajustement.")
-        card_close()
 
-    with right:
-        card_open()
-        st.markdown("### 📌 Projet 4 — Analyse de la satisfaction du restaurant de l’ENSEA (ACP)")
+    with st.expander("📌 Projet 4 — Analyse de la satisfaction du restaurant de l’ENSEA (ACP)", expanded=open4):
         badges(["Statistiques", "ACP"], "green")
         badges(["Alpha de Cronbach", "DataViz"], "purple")
         st.markdown("**Objectif :** mesurer la satisfaction et identifier les axes d’amélioration prioritaires.")
         st.markdown("**Méthodes :** indicateurs, ACP, fiabilité interne, visualisation, recommandations.")
         st.markdown("**Résultat :** indicateur global fiable + priorités d’amélioration.")
-        card_close()
 
 elif page == "Compétences":
     st.subheader("Compétences")
@@ -591,7 +602,6 @@ elif page == "Contact":
 
     c1, c2 = st.columns(2, gap="large")
 
-    # --- Infos ---
     with c1:
         card_open()
         st.markdown("### 📧 Email")
@@ -611,7 +621,6 @@ elif page == "Contact":
         st.markdown("[atta-jérémie-kouame](https://www.linkedin.com)")
         card_close()
 
-    # --- Formulaire (envoi automatique via Formspree) ---
     with c2:
         card_open()
         st.markdown("### ✉️ Envoyer un message")
@@ -628,7 +637,7 @@ elif page == "Contact":
             elif "@" not in email or "." not in email:
                 st.error("Veuillez entrer une adresse email valide.")
             else:
-                endpoint = "https://formspree.io/f/mqeawbbk"  # <-- remplace par ton vrai endpoint
+                endpoint = "https://formspree.io/f/mqeawbbk"
 
                 payload = {
                     "name": nom,
@@ -644,21 +653,17 @@ elif page == "Contact":
                         headers={"Accept": "application/json"},
                         timeout=15,
                     )
-
                     if r.status_code in (200, 201):
                         st.success("✅ Message envoyé ! Je l’ai bien reçu par email.")
                     else:
                         st.error("❌ Envoi échoué. Réessaie ou contacte-moi directement par email.")
                         st.code(f"Status: {r.status_code}\nRéponse: {r.text}")
-
                 except requests.exceptions.RequestException as e:
                     st.error("❌ Problème réseau pendant l’envoi. Réessaie dans quelques secondes.")
                     st.code(str(e))
 
         st.caption("🔒 Envoi automatique vers ma boîte email via Formspree.")
         card_close()
-
-
 
 # ------------------ FOOTER ------------------
 st.markdown("""
