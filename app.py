@@ -164,6 +164,70 @@ img { border-radius: 16px; }
 }
 .footer a:hover{ text-decoration: underline; }
 
+/* TIMELINE */
+.timeline{
+  position: relative;
+  margin: 0.6rem 0 1.2rem 0;
+  padding-left: 1.2rem;
+}
+.timeline:before{
+  content:"";
+  position:absolute;
+  left: 6px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(37,99,235,0.55), rgba(16,185,129,0.55));
+  border-radius: 999px;
+}
+
+.titem{
+  position: relative;
+  margin: 0.9rem 0;
+  padding: 0.85rem 0.95rem 0.85rem 0.95rem;
+  border: 1px solid rgba(37,99,235,0.18);
+  border-radius: 16px;
+  background: linear-gradient(135deg,
+      rgba(37,99,235,0.10) 0%,
+      rgba(16,185,129,0.08) 55%,
+      rgba(99,102,241,0.08) 100%);
+  box-shadow: 0 10px 24px rgba(2,6,23,0.06);
+}
+
+.tdot{
+  position:absolute;
+  left: -1.2rem;
+  top: 1.05rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(16,185,129,0.95);
+  box-shadow: 0 0 0 5px rgba(16,185,129,0.18);
+}
+
+.tdate{
+  font-size: 0.85rem;
+  color: rgba(17,24,39,0.65);
+  margin-bottom: 0.2rem;
+}
+.ttitle{
+  font-weight: 800;
+  color: rgba(17,24,39,0.92);
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.2px;
+}
+.tmeta{
+  font-size: 0.9rem;
+  color: rgba(17,24,39,0.72);
+  margin-bottom: 0.35rem;
+}
+.tdesc{
+  font-size: 0.95rem;
+  color: rgba(17,24,39,0.70);
+  line-height: 1.55;
+}
+
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -180,7 +244,7 @@ def card_close():
 
 # ------------------ SIDEBAR ------------------
 st.sidebar.markdown("## ⚙️ Portfolio")
-page = st.sidebar.radio("Navigation", ["Accueil", "À propos", "Projets", "Compétences", "CV", "Contact"])
+page = st.sidebar.radio("Navigation", ["Accueil", "À propos","Parcours", "Projets", "Compétences", "CV", "Contact"])
 st.sidebar.divider()
 st.sidebar.caption("© Atta Jérémie KOUAME")
 
@@ -296,6 +360,94 @@ elif page == "À propos":
         unsafe_allow_html=True
     )
     card_close()
+    
+
+    # ================== PARCOURS PROFESSIONNEL ==================
+elif page == "Parcours":
+    st.subheader("📌 Parcours")
+
+    # --------- TIMELINE SCOLAIRE ----------
+    st.markdown("## 🎓 Parcours académique")
+    card_open()
+    st.markdown("""
+    <div class="timeline">
+      <div class="titem">
+        <span class="tdot"></span>
+        <div class="tdate">Année – Année</div>
+        <div class="ttitle">Ingénieur Statisticien – Économiste</div>
+        <div class="tmeta">ENSEA • Abidjan</div>
+        <div class="tdesc">
+          Statistiques appliquées, économétrie, data analysis, visualisation, méthodes quantitatives.
+          Projets académiques orientés business, développement et finance.
+        </div>
+      </div>
+
+      <div class="titem">
+        <span class="tdot"></span>
+        <div class="tdate">En continu</div>
+        <div class="ttitle">Auto-formation Data & BI</div>
+        <div class="tmeta">Python • Power BI • Tableau • SQL</div>
+        <div class="tdesc">
+          Approfondissement des compétences en data analytics, KPI, reporting, dashboards et machine learning.
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+    card_close()
+
+    # --------- TIMELINE PRO ----------
+    st.markdown("## 💼 Parcours professionnel")
+    card_open()
+    st.markdown("""
+    <div class="timeline">
+      <div class="titem">
+        <span class="tdot"></span>
+        <div class="tdate">Projet</div>
+        <div class="ttitle">Data Analyst — Prédiction rétention / churn (Télécom)</div>
+        <div class="tmeta">Python • ML • KPI</div>
+        <div class="tdesc">
+          Préparation des données, EDA, feature engineering, classification.
+          Objectif : identifier les clients à risque et proposer des actions de rétention.
+        </div>
+      </div>
+
+      <div class="titem">
+        <span class="tdot"></span>
+        <div class="tdate">Projet</div>
+        <div class="ttitle">Économétrie — Déterminants de la pauvreté (UEMOA, 2021)</div>
+        <div class="tmeta">Stata • Analyse socio-économique</div>
+        <div class="tdesc">
+          Structuration des bases, estimation économétrique, interprétation et recommandations
+          pour appuyer la décision publique.
+        </div>
+      </div>
+
+      <div class="titem">
+        <span class="tdot"></span>
+        <div class="tdate">Projet</div>
+        <div class="ttitle">Finance — Optimisation portefeuille actions / obligations</div>
+        <div class="tmeta">Excel avancé • Risk/Return</div>
+        <div class="tdesc">
+          Analyse rendement/risque, allocation d’actifs, sensibilité aux taux et reporting.
+        </div>
+      </div>
+
+      <div class="titem">
+        <span class="tdot"></span>
+        <div class="tdate">Projet</div>
+        <div class="ttitle">Statistiques — Satisfaction restaurant ENSEA (ACP)</div>
+        <div class="tmeta">ACP • Alpha de Cronbach • DataViz</div>
+        <div class="tdesc">
+          Construction d’un indicateur de satisfaction, analyse multivariée et recommandations d’amélioration.
+        </div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
+    card_close()
+
+    st.info("🎯 Objectif : intégrer une équipe data en tant que **Data Analyst** ou **Business Analyst** et générer un impact métier mesurable.")
+
+
 
 elif page == "Projets":
     st.subheader("Projets")
